@@ -5,8 +5,10 @@
 #pragma once
 #include "3ds.h"
 
+#define  CWAV_DISABLE_CSND
+
 #ifndef CWAV_DISABLE_CSND
-#include "ncsnd.h"
+#include <ncsnd.h>
 #endif
 
 #ifdef __cplusplus
@@ -156,6 +158,17 @@ bool cwavPlayAsDirectSound(CWAV* cwav, int leftChannel, int rightChannel, u32 di
  * To play a single channel in mono for both ears, set rightChannel to -1.
 */
 cwavPlayResult cwavPlay(CWAV* cwav, int leftChannel, int rightChannel);
+
+/**
+ * @brief Updates the volume of the channels.
+ * @param cwav The CWAV that is playing.
+ * @param leftChannel The CWAV channel to update (left ear).
+ * @param rigtChannel The CWAV channel to update (right ear).
+ *
+ * Setting both channels to -1 update all the CWAV channels.
+*/
+void cwavUpdateVolume(CWAV* cwav, int leftChannel, int rightChannel);
+
 
 /**
  * @brief Stops the specified channels in the bcwav file.
