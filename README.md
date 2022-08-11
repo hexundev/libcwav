@@ -1,3 +1,11 @@
+# Additions to libcwav
+
+Function to update the volume of a CWAV
+`void cwavUpdateVolume(CWAV* cwav, int leftChannel, int rightChannel);
+`
+
+***
+
 # libcwav
 A library for playing **(b)cwav** files on the **3DS**.
 
