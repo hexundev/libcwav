@@ -20,6 +20,7 @@ bool cwavEnvPlayDirectSound(CWAV* cwav, int leftChannel, int rightChannel, u32 d
 
 void cwavEnvPlay(u32 channel, bool isLooped, cwavEncoding_t encoding, u32 sampleRate, float volume, float pan, float pitch, void* block0, void* block1, u32 loopStart, u32 loopEnd, u32 totalSize, cwavIMAADPCMInfo_t* IMAADPCMInfos, cwavDSPADPCMInfo_t* DSPADPCMInfos);
 bool cwavEnvChannelIsPlaying(u32 channel);
+void cwavEnvUpdateVolume(u32 channel, float volume, float pan);
 void cwavEnvStop(u32 channel);
 
 #endif
