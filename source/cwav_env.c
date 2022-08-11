@@ -210,6 +210,22 @@ bool cwavEnvPlayDirectSound(CWAV* cwav, int leftChannel, int rightChannel, u32 d
 }
 #endif
 
+
+static void _dspSetMix(u32 channel, float volume, float pan)
+{
+#ifndef CWAV_DISABLE_DSP
+    float mix[12] = { 0 };
+    float rightPan = (pan + 1.f) / 2.f;
+    float leftPan = 1.f - rightPan;
+    mix[0] = 0.8f * leftPan * volume; // Left front
+    mix[2] = 0.2f * leftPan * volume; // Left back
+    mix[1] = 0.8f * rightPan * volume; // Right front
+    mix[3] = 0.2f * rightPan * volume; // Right back
+    ndspChnSetMix(channel, mix);
+#endif
+}
+
+
 void cwavEnvPlay(u32 channel, bool isLooped, cwavEncoding_t encoding, u32 sampleRate, float volume, float pan, float pitch, void* block0, void* block1, u32 loopStart, u32 loopEnd, u32 totalSize, cwavIMAADPCMInfo_t* IMAADPCMInfos, cwavDSPADPCMInfo_t* DSPADPCMInfos)
 {
     if (g_currentEnv == CWAV_ENV_CSND)
@@ -291,19 +307,11 @@ void cwavEnvPlay(u32 channel, bool isLooped, cwavEncoding_t encoding, u32 sample
             break;
         default:
             break;
-        }
-
-        float mix[12] = {0};
-        float rightPan = (pan + 1.f) / 2.f;
-        float leftPan = 1.f - rightPan;
-        mix[0] = 0.8f * leftPan * volume; // Left front
-        mix[2] = 0.2f * leftPan * volume; // Left back
-        mix[1] = 0.8f * rightPan * volume; // Right front
-        mix[3] = 0.2f * rightPan * volume; // Right back
+        } 
 
         ndspChnSetFormat(channel, encFlag);
         ndspChnSetRate(channel, (float)(sampleRate) * pitch);
-        ndspChnSetMix(channel, mix);
+        _dspSetMix(channel, volume, pan);
 
         block1Buff->data_vaddr = isLooped ? block1 : block0;
         block1Buff->nsamples = loopEnd - loopStart;
@@ -342,6 +350,17 @@ bool cwavEnvChannelIsPlaying(u32 channel)
 #endif
     }
     return false;
+}
+
+
+void cwavEnvUpdateVolume(u32 channel, float volume, float pan)
+{
+    if (g_currentEnv == CWAV_ENV_DSP)
+    {
+#ifndef CWAV_DISABLE_DSP
+        _dspSetMix(channel, volume, pan);
+#endif
+    }
 }
 
 void cwavEnvStop(u32 channel)
