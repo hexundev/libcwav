@@ -1,6 +1,7 @@
 # Additions to libcwav
 
 Function to update the volume of a CWAV
+
 `void cwavUpdateVolume(CWAV* cwav, int leftChannel, int rightChannel);
 `
 
